@@ -1,21 +1,45 @@
 NAME = push_swap
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
+# Directories
+SRC_DIR = src
+OPERATIONS_DIR = $(SRC_DIR)/operations
+SORT_DIR = $(SRC_DIR)/sort
+UTILS_DIR = $(SRC_DIR)/utils
+INC_DIR = includes
+OBJ_DIR = obj
 
-SRCS = stack_ops.c operations.c push_swap.c
-OBJS = $(SRCS:.c=.o)
+# Source files
+SRCS = $(SRC_DIR)/push_swap.c \
+       $(OPERATIONS_DIR)/push_operations.c \
+       $(OPERATIONS_DIR)/swap_operations.c \
+       $(OPERATIONS_DIR)/rotate_operations.c \
+       $(OPERATIONS_DIR)/reverse_rotate_operations.c \
+       $(SORT_DIR)/simple_sort.c \
+       $(SORT_DIR)/sort_utils.c \
+       $(UTILS_DIR)/stack_ops.c \
+       $(UTILS_DIR)/utils.c \
+       $(UTILS_DIR)/operations_counter.c
+
+# Object files
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# Compiler flags
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR)
+
+# Create object directories
+$(shell mkdir -p $(OBJ_DIR) $(OBJ_DIR)/operations $(OBJ_DIR)/sort $(OBJ_DIR)/utils)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME)
 
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
