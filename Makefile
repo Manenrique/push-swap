@@ -18,7 +18,7 @@ SRCS = $(SRC_DIR)/push_swap.c \
        $(SORT_DIR)/sort_utils.c \
        $(UTILS_DIR)/stack_ops.c \
        $(UTILS_DIR)/utils.c \
-       $(UTILS_DIR)/operations_counter.c
+       $(UTILS_DIR)/string_utils.c
 
 # Object files
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

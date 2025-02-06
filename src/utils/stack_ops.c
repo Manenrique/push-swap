@@ -56,5 +56,6 @@ void    clear_stack(t_stack *stack)
         free(current);
         current = next;
     }
-    free(stack);
+    stack->top = NULL;
+    stack->size = 0;
 }

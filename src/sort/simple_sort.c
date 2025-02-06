@@ -31,6 +31,19 @@ void simple_sort(t_stack *a, t_stack *b)
     int min_pos;
     int size;
 
+    if (a->size <= 1)
+        return;
+    if (a->size == 2)
+    {
+        sort_two(a);
+        return;
+    }
+    if (a->size == 3)
+    {
+        sort_three(a);
+        return;
+    }
+
     while (a->size > 0)
     {
         size = a->size;

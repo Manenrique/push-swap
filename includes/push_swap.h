@@ -16,6 +16,10 @@ typedef struct s_stack
     int     size;
 }   t_stack;
 
+// Error handling
+void    error_exit(void);
+void    cleanup_and_exit(t_stack *stack_a, t_stack *stack_b, int error);
+
 // Stack operations
 t_stack *create_stack(void);
 void    push(t_stack *stack, int value);
@@ -52,7 +56,10 @@ void    quicksort_a(t_stack *a, t_stack *b, int size);
 // Utils
 long    ft_atol(const char *str);
 int     is_sorted(t_stack *stack);
-void    increment_operation_count(void);
-void    print_operation_count(void);
+
+// String processing
+char    **ft_split(char const *s, char c);
+void    free_split(char **split);
+int     count_words(char const *s, char c);
 
 #endif

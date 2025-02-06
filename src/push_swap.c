@@ -1,5 +1,28 @@
 #include "push_swap.h"
 
+void	error_exit(void)
+{
+    write(2, "Error\n", 6);
+    exit(1);
+}
+
+void	cleanup_and_exit(t_stack *stack_a, t_stack *stack_b, int error)
+{
+    if (stack_a)
+    {
+        clear_stack(stack_a);
+        free(stack_a);
+    }
+    if (stack_b)
+    {
+        clear_stack(stack_b);
+        free(stack_b);
+    }
+    if (error)
+        error_exit();
+    exit(0);
+}
+
 static int	is_valid_number(char *str)
 {
     int	i;
@@ -38,39 +61,36 @@ static int	check_duplicates(t_stack *stack)
     return (0);
 }
 
-static void	error_exit(void)
-{
-    write(2, "Error\n", 6);
-    exit(1);
-}
-
 static void	process_input(t_stack *stack_a, char **argv, int i)
 {
     long num;
 
-    if (!is_valid_number(argv[i]))
-        error_exit();
     num = ft_atol(argv[i]);
     if (num > 2147483647 || num < -2147483648)
-        error_exit();
+        cleanup_and_exit(stack_a, NULL, 1);
     push(stack_a, (int)num);
 }
 
-static int check_operations_flag(int argc, char **argv)
+static void	process_string_input(t_stack *stack_a, char *str)
 {
-    int i;
+    char	**numbers;
+    int		i;
 
-    i = 1;
-    while (i < argc)
+    numbers = ft_split(str, ' ');
+    if (!numbers)
+        cleanup_and_exit(stack_a, NULL, 1);
+    i = 0;
+    while (numbers[i])
     {
-        if (argv[i][0] == 'o' && argv[i][1] == 'p' && argv[i][2] == 'e' &&
-            argv[i][3] == 'r' && argv[i][4] == 'a' && argv[i][5] == 't' &&
-            argv[i][6] == 'i' && argv[i][7] == 'o' && argv[i][8] == 'n' &&
-            argv[i][9] == 's' && argv[i][10] == '\0')
-            return (1);
+        if (!is_valid_number(numbers[i]))
+        {
+            free_split(numbers);
+            cleanup_and_exit(stack_a, NULL, 1);
+        }
+        process_input(stack_a, numbers, i);
         i++;
     }
-    return (0);
+    free_split(numbers);
 }
 
 int	main(int argc, char **argv)
@@ -78,39 +98,36 @@ int	main(int argc, char **argv)
     t_stack	*stack_a;
     t_stack	*stack_b;
     int		i;
-    int     show_operations;
 
+    stack_a = NULL;
+    stack_b = NULL;
     if (argc < 2)
-        return (0);
-    show_operations = check_operations_flag(argc, argv);
+        cleanup_and_exit(NULL, NULL, 0);
     stack_a = create_stack();
     stack_b = create_stack();
     if (!stack_a || !stack_b)
-        error_exit();
-    i = argc - 1;
-    while (i > 0)
+        cleanup_and_exit(stack_a, stack_b, 1);
+    
+    if (argc == 2)
+        process_string_input(stack_a, argv[1]);
+    else
     {
-        if (argv[i][0] != 'o' || argv[i][1] != 'p' || argv[i][2] != 'e' ||
-            argv[i][3] != 'r' || argv[i][4] != 'a' || argv[i][5] != 't' ||
-            argv[i][6] != 'i' || argv[i][7] != 'o' || argv[i][8] != 'n' ||
-            argv[i][9] != 's' || argv[i][10] != '\0')
+        i = 1;
+        while (i < argc)
+        {
+            if (!is_valid_number(argv[i]))
+                cleanup_and_exit(stack_a, stack_b, 1);
             process_input(stack_a, argv, i);
-        i--;
+            i++;
+        }
     }
+    
     if (check_duplicates(stack_a))
-        error_exit();
+        cleanup_and_exit(stack_a, stack_b, 1);
+    
     if (!is_sorted(stack_a))
-    {
-        if (stack_a->size == 2)
-            sort_two(stack_a);
-        else if (stack_a->size == 3)
-            sort_three(stack_a);
-        else
-            simple_sort(stack_a, stack_b);
-    }
-    if (show_operations)
-        print_operation_count();
-    clear_stack(stack_a);
-    clear_stack(stack_b);
+        simple_sort(stack_a, stack_b);
+    
+    cleanup_and_exit(stack_a, stack_b, 0);
     return (0);
 }

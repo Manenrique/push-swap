@@ -23,14 +23,12 @@ void    rra(t_stack *stack_a)
 {
     reverse_rotate_stack(stack_a);
     write(1, "rra\n", 4);
-    increment_operation_count();
 }
 
 void    rrb(t_stack *stack_b)
 {
     reverse_rotate_stack(stack_b);
     write(1, "rrb\n", 4);
-    increment_operation_count();
 }
 
 void    rrr(t_stack *stack_a, t_stack *stack_b)
@@ -38,5 +36,4 @@ void    rrr(t_stack *stack_a, t_stack *stack_b)
     reverse_rotate_stack(stack_a);
     reverse_rotate_stack(stack_b);
     write(1, "rrr\n", 4);
-    increment_operation_count();
 }
